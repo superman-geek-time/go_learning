@@ -44,10 +44,11 @@ func fillBySettings(st interface{}, settings map[string]interface{}) error {
 	// It returns the zero Value if v is nil.
 
 	if reflect.TypeOf(st).Kind() != reflect.Ptr {
-		// Elem() 获取指针指向的值
-		if reflect.TypeOf(st).Elem().Kind() != reflect.Struct {
-			return errors.New("the first param should be a pointer to the struct type.")
-		}
+		return errors.New("the first param should be a pointer to the struct type.")
+	}
+	// Elem() 获取指针指向的值
+	if reflect.TypeOf(st).Elem().Kind() != reflect.Struct {
+		return errors.New("the first param should be a pointer to the struct type.")
 	}
 
 	if settings == nil {
