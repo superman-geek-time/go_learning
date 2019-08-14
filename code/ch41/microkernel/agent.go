@@ -88,6 +88,7 @@ func (agt *Agent) startCollectors() error {
 	var err error
 	var errs CollectorsError
 	var mutex sync.Mutex
+
 	for name, collector := range agt.collectors {
 		go func(name string, collector Collector, ctx context.Context) {
 			defer func() {
@@ -101,6 +102,9 @@ func (agt *Agent) startCollectors() error {
 			}
 		}(name, collector, agt.ctx)
 	}
+	if len(errs.CollectorErrors) == 0 {
+		return nil
+	}
 	return errs
 }
 
@@ -113,6 +117,10 @@ func (agt *Agent) stopCollectors() error {
 				errors.New(name+":"+err.Error()))
 		}
 	}
+	if len(errs.CollectorErrors) == 0 {
+		return nil
+	}
+
 	return errs
 }
 
@@ -124,6 +132,9 @@ func (agt *Agent) destoryCollectors() error {
 			errs.CollectorErrors = append(errs.CollectorErrors,
 				errors.New(name+":"+err.Error()))
 		}
+	}
+	if len(errs.CollectorErrors) == 0 {
+		return nil
 	}
 	return errs
 }
